@@ -94,9 +94,24 @@ const AnalyticsView: React.FC<AnalyticsViewProps> = ({ results }) => {
     ],
   };
 
+  const wasteDistributionData = {
+    labels: Object.keys(plateEfficiency),
+    datasets: [
+      {
+        label: 'Waste %',
+        data: Object.values(plateEfficiency).map(v =>
+          parseFloat(((v.excess / v.produced) * 100).toFixed(2))
+        ),
+        backgroundColor: 'rgba(255, 159, 64, 0.6)',
+        borderColor: 'rgba(255, 159, 64, 1)',
+        borderWidth: 1,
+      },
+    ],
+  };
+
   return (
     <div className="space-y-8">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Color Distribution Chart */}
         <div className="bg-gradient-to-r from-gray-300 to-gray-100 p-6 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-300">
           <h3 className="text-2xl font-semibold mb-4 text-gray-700">Color Distribution</h3>
@@ -117,6 +132,26 @@ const AnalyticsView: React.FC<AnalyticsViewProps> = ({ results }) => {
                 scales: {
                   y: {
                     beginAtZero: true,
+                  },
+                },
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Waste Distribution Chart */}
+        <div className="bg-gradient-to-r from-gray-300 to-gray-100 p-6 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-300">
+          <h3 className="text-2xl font-semibold mb-4 text-gray-700">Waste by Plate</h3>
+          <div className="h-64">
+            <Bar
+              data={wasteDistributionData}
+              options={{
+                maintainAspectRatio: false,
+                responsive: true,
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                    max: 100,
                   },
                 },
               }}
