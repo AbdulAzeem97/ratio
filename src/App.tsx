@@ -10,6 +10,8 @@ import Pdfexport from './components/Pdfexport'; // Import the Pdfexport componen
 import AnalyticsView from './components/AnalyticsView';
 import LoginPage from './components/LoginPage'; // Import LoginPage component
 import OptimizationSuggestions from './components/OptimizationSuggestions';
+import PlatePreview from './components/PlatePreview';
+import PredictionPanel from './components/PredictionPanel';
 import { OptimizationResult, OptimizationSummary } from './types/types';
 import { useDarkMode } from './hooks/useDarkMode';
 import { optimizeUpsWithPlates } from './utils/optimizer';
@@ -21,6 +23,8 @@ function App() {
   const [fileName, setFileName] = useState<string>('');
   const [results, setResults] = useState<OptimizationResult[] | null>(null);
   const [summary, setSummary] = useState<OptimizationSummary | null>(null);
+  const [lastUps, setLastUps] = useState<number>(0);
+  const [lastPlates, setLastPlates] = useState<number>(0);
   const [calculating, setCalculating] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'results' | 'analytics'>('results');
   const { darkMode, toggleDarkMode } = useDarkMode();
@@ -46,6 +50,8 @@ function App() {
     if (!csvData) return;
 
     setCalculating(true);
+    setLastUps(upsPerPlate);
+    setLastPlates(plateCount);
 
     // Use requestAnimationFrame for smoother UI updates
     requestAnimationFrame(() => {
@@ -178,9 +184,15 @@ function App() {
                       {activeTab === 'results' ? (
                         <>
                           <ResultsTable results={results} />
+                          <div className="mt-6">
+                            <PlatePreview results={results} />
+                          </div>
                           {summary && (
                             <div className="mt-6">
                               <OptimizationSuggestions summary={summary} />
+                              {csvData && (
+                                <PredictionPanel items={csvData} ups={lastUps} plates={lastPlates} />
+                              )}
                             </div>
                           )}
                         </>

@@ -46,6 +46,9 @@ A sample CSV file is provided in `public/sample.csv`. Use this file to test the 
 - **User Profiles** — logged-in users can view their name, role and last login in the header and log out at any time.
 - **Optimization Suggestions** — the results view now displays tips to help reduce waste.
 - **Advanced Analytics** — an additional waste percentage chart provides deeper insight into plate efficiency.
+- **Plate Preview** — visualize how items are distributed across plates.
+- **Prediction Panel** — see estimated waste if one more plate were used.
+- **Improved Calculations** — optimizer now respects the plate count for leftover items.
 
 ## Linting
 

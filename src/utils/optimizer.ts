@@ -145,7 +145,8 @@ export const optimizeUpsWithPlates = (
   let remainingItems = [...sortedItems];
 
   while (remainingItems.length > 0 && plateIndex < plateCount) {
-    const plateItems = remainingItems.slice(0, 4); // pick max 4 for combo
+    const plateItems = remainingItems.slice(0, Math.min(4, remainingItems.length));
+
     const bestCombo = upsCombos
       .filter(c => c.length === plateItems.length)
       .map(c => {
@@ -186,27 +187,45 @@ export const optimizeUpsWithPlates = (
     plateIndex++;
   }
 
-  // Handle leftovers with 1 item per plate
-  for (const item of remainingItems) {
-    const ups = upsPerPlate;
-    const sheets = Math.ceil(item.QTY / ups);
-    const produced = sheets * ups;
-    const excess = produced - item.QTY;
+  while (remainingItems.length > 0 && plateIndex < plateCount) {
+    const plateItems = remainingItems.slice(0, Math.min(4, remainingItems.length));
+    const bestCombo = upsCombos
+      .filter(c => c.length === plateItems.length)
+      .map(c => {
+        const sheetsNeeded = Math.max(
+          ...plateItems.map((item, i) => Math.ceil(item.QTY / c[i]))
+        );
+        return { combo: c, sheetsNeeded };
+      })
+      .sort((a, b) => a.sheetsNeeded - b.sheetsNeeded)[0];
+
+    if (!bestCombo) break;
+
     const plateLabel = String.fromCharCode(65 + plateIndex);
 
-    results.push({
-      COLOR: item.COLOR,
-      SIZE: item.SIZE,
-      QTY: item.QTY,
-      PLATE: plateLabel,
-      OPTIMAL_UPS: ups,
-      SHEETS_NEEDED: sheets,
-      QTY_PRODUCED: produced,
-      EXCESS: excess
-    });
+    for (let i = 0; i < plateItems.length; i++) {
+      const item = plateItems[i];
+      const ups = bestCombo.combo[i];
+      const sheetsNeeded = bestCombo.sheetsNeeded;
+      const produced = sheetsNeeded * ups;
+      const excess = produced - item.QTY;
 
-    summary.totalSheets += sheets;
-    summary.totalProduced += produced;
+      results.push({
+        COLOR: item.COLOR,
+        SIZE: item.SIZE,
+        QTY: item.QTY,
+        PLATE: plateLabel,
+        OPTIMAL_UPS: ups,
+        SHEETS_NEEDED: sheetsNeeded,
+        QTY_PRODUCED: produced,
+        EXCESS: excess
+      });
+    }
+
+    summary.totalSheets += bestCombo.sheetsNeeded;
+    summary.totalProduced += bestCombo.sheetsNeeded * upsPerPlate;
+
+    remainingItems = remainingItems.slice(plateItems.length);
     plateIndex++;
   }
 
