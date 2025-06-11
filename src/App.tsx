@@ -43,7 +43,12 @@ function App() {
     setCalculating(false);
   };
 
-  const handleOptimize = (upsPerPlate: number, plateCount: number) => {
+  const handleOptimize = (
+    upsPerPlate: number,
+    plateCount: number,
+    paperCost: number,
+    inkCost: number
+  ) => {
     if (!csvData) return;
 
     setCalculating(true);
@@ -51,7 +56,13 @@ function App() {
     // Use requestAnimationFrame for smoother UI updates
     requestAnimationFrame(() => {
       try {
-        const { results, summary } = optimizeUpsWithPlates(csvData, upsPerPlate, plateCount);
+        const { results, summary } = optimizeUpsWithPlates(
+          csvData,
+          upsPerPlate,
+          plateCount,
+          paperCost,
+          inkCost
+        );
         handleOptimizationComplete(results, summary);
       } catch (error) {
         console.error('Optimization error:', error);
@@ -126,7 +137,7 @@ function App() {
               {results && (
                 <div className="space-y-6">
                   {/* Quick Stats */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
                     <div className="bg-gradient-to-r from-indigo-500 to-purple-600 p-4 rounded-lg shadow-lg text-white">
                       <div className="text-sm font-semibold">Total Sheets</div>
                       <div className="text-xl font-bold">{summary?.totalSheets.toLocaleString()}</div>
@@ -142,6 +153,12 @@ function App() {
                     <div className="bg-gradient-to-r from-red-400 to-red-600 p-4 rounded-lg shadow-lg text-white">
                       <div className="text-sm font-semibold">Excess Qty in Pieces</div>
                       <div className="text-xl font-bold">{summary?.wastePercentage.toFixed(1)}%</div>
+                    </div>
+                    <div className="bg-gradient-to-r from-blue-400 to-blue-600 p-4 rounded-lg shadow-lg text-white">
+                      <div className="text-sm font-semibold">Estimated Material Cost</div>
+                      <div className="text-xl font-bold">$
+                        {summary?.totalCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </div>
                     </div>
                   </div>
                   {/* Pdfexport Component for PDF Export */}

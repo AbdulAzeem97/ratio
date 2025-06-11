@@ -4,7 +4,7 @@ import { jwtDecode } from 'jwt-decode';
 import CryptoJS from 'crypto-js';
 
 const STORAGE_KEY = 'ups_optimizer_auth';
-const SECRET_KEY = 'your-secret-key';
+const SECRET_KEY = import.meta.env.VITE_SECRET_KEY || 'default-secret';
 
 interface StoredUser {
   username: string;
@@ -14,15 +14,21 @@ interface StoredUser {
 }
 
 const users: StoredUser[] = [
-  { 
-    username: 'horizon',
-    passwordHash: bcrypt.hashSync('HS@Ratio@123!@#', 10),
+  {
+    username: import.meta.env.VITE_ADMIN_USER || 'admin',
+    passwordHash: bcrypt.hashSync(
+      import.meta.env.VITE_ADMIN_PASS || 'admin123',
+      10
+    ),
     role: 'admin',
     lastLogin: new Date().toISOString()
   },
   {
-    username: 'azeem',
-    passwordHash: bcrypt.hashSync('azeem321', 10),
+    username: import.meta.env.VITE_USER || 'user',
+    passwordHash: bcrypt.hashSync(
+      import.meta.env.VITE_USER_PASS || 'user123',
+      10
+    ),
     role: 'user',
     lastLogin: new Date().toISOString()
   }

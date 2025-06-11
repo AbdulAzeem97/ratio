@@ -32,10 +32,18 @@ npm run preview
 
 ## Login Credentials
 
-Default accounts are defined in `src/services/auth.ts`:
+Default accounts are configured via environment variables and fall back to test
+values if not provided:
 
-- **Admin:** `horizon` / `HS@Ratio@123!@#`
-- **User:** `azeem` / `azeem321`
+```
+VITE_ADMIN_USER=admin
+VITE_ADMIN_PASS=admin123
+VITE_USER=user
+VITE_USER_PASS=user123
+VITE_SECRET_KEY=some-secret-key
+```
+
+These variables are consumed in `src/services/auth.ts`.
 
 ## Sample Data
 
@@ -46,6 +54,7 @@ A sample CSV file is provided in `public/sample.csv`. Use this file to test the 
 - **User Profiles** — logged-in users can view their name, role and last login in the header and log out at any time.
 - **Optimization Suggestions** — the results view now displays tips to help reduce waste.
 - **Advanced Analytics** — an additional waste percentage chart provides deeper insight into plate efficiency.
+- **Material Cost Estimator** — input paper and ink costs per sheet to calculate overall material expenses.
 
 ## Linting
 
@@ -57,4 +66,4 @@ npm run lint
 
 ## License
 
-This project is provided as-is without a specific license.
+This project is licensed under the [MIT License](LICENSE).

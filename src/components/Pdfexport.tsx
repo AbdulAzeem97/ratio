@@ -40,7 +40,7 @@ const Pdfexport: React.FC<PdfexportProps> = ({ summary, results }) => {
       ['No. of UPS', summary.upsCapacity.toString(), 'Total Sheets', numSheets.toString()],
       ['Total Plates', numPlates.toString(), 'Required Order Qty', summary.totalItems.toString()],
       ['Qty Produced', summary.totalProduced.toString(), 'Excess Qty', summary.totalExcess.toString()],
-      ['Excess %', `${summary.wastePercentage}%`, '', ''],
+      ['Excess %', `${summary.wastePercentage}%`, 'Total Cost', `$${summary.totalCost.toFixed(2)}`],
     ];
   
     autoTable(doc, {
