@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { LogIn, Key, User } from 'lucide-react';
-import { login } from '../services/auth.ts';
+import { login } from '../services/auth';
 
 interface LoginPageProps {
   onLogin: (userData: { username: string; role: string; lastLogin: string }) => void;

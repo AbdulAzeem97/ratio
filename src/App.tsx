@@ -9,11 +9,14 @@ import ResultsTable from './components/ResultsTable';
 import Pdfexport from './components/Pdfexport'; // Import the Pdfexport component
 import AnalyticsView from './components/AnalyticsView';
 import LoginPage from './components/LoginPage'; // Import LoginPage component
+import OptimizationSuggestions from './components/OptimizationSuggestions';
 import { OptimizationResult, OptimizationSummary } from './types/types';
 import { useDarkMode } from './hooks/useDarkMode';
-import { optimizeUpsWithPlates } from './utils/optimizer';    
+import { optimizeUpsWithPlates } from './utils/optimizer';
+import { checkAuth, logout as logoutUser } from './services/auth';
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
+  const [userData, setUserData] = useState(() => checkAuth());
+  const [isLoggedIn, setIsLoggedIn] = useState(() => !!userData);
   const [csvData, setCsvData] = useState<Array<{ COLOR: string; SIZE: string; QTY: number }> | null>(null);
   const [fileName, setFileName] = useState<string>('');
   const [results, setResults] = useState<OptimizationResult[] | null>(null);
@@ -58,8 +61,17 @@ function App() {
 
   
 
-  const handleLogin = () => {
+  const handleLogin = (
+    data: { username: string; role: string; lastLogin: string }
+  ) => {
+    setUserData(data);
     setIsLoggedIn(true); // Set logged-in state to true
+  };
+
+  const handleLogout = () => {
+    logoutUser();
+    setUserData(null);
+    setIsLoggedIn(false);
   };
 
   if (!isLoggedIn) {
@@ -69,7 +81,13 @@ function App() {
   return (
     <div className={darkMode ? 'dark' : ''}>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
-        <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} fileName={fileName} />
+        <Header
+          darkMode={darkMode}
+          toggleDarkMode={toggleDarkMode}
+          fileName={fileName}
+          user={userData!}
+          onLogout={handleLogout}
+        />
 
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col lg:flex-row gap-6">
@@ -160,9 +178,11 @@ function App() {
                       {activeTab === 'results' ? (
                         <>
                           <ResultsTable results={results} />
-                          <div className="mt-6">
-                            {/* <ComparisonTable results={results} /> */}
-                          </div>
+                          {summary && (
+                            <div className="mt-6">
+                              <OptimizationSuggestions summary={summary} />
+                            </div>
+                          )}
                         </>
                       ) : (
                         <AnalyticsView results={results} />
