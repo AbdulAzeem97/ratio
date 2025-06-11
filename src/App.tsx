@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { LayoutDashboard, BarChart as ChartBar } from 'lucide-react';
+import { LayoutDashboard, BarChart as ChartBar, Bot } from 'lucide-react';
 import Header from './components/Header';
 import FileUpload from './components/FileUpload';
 import OptimizationForm from './components/OptimizationForm';
@@ -10,6 +10,7 @@ import Pdfexport from './components/Pdfexport'; // Import the Pdfexport componen
 import AnalyticsView from './components/AnalyticsView';
 import LoginPage from './components/LoginPage'; // Import LoginPage component
 import OptimizationSuggestions from './components/OptimizationSuggestions';
+import AiAssistant from './components/AiAssistant';
 import { OptimizationResult, OptimizationSummary } from './types/types';
 import { useDarkMode } from './hooks/useDarkMode';
 import { optimizeUpsWithPlates } from './utils/optimizer';
@@ -22,7 +23,7 @@ function App() {
   const [results, setResults] = useState<OptimizationResult[] | null>(null);
   const [summary, setSummary] = useState<OptimizationSummary | null>(null);
   const [calculating, setCalculating] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<'results' | 'analytics'>('results');
+  const [activeTab, setActiveTab] = useState<'results' | 'analytics' | 'assistant'>('results');
   const { darkMode, toggleDarkMode } = useDarkMode();
 
   const handleCsvUpload = (
@@ -171,6 +172,17 @@ function App() {
                           <ChartBar size={18} className="inline-block mr-2" />
                           Analytics
                         </button>
+                        <button
+                          className={`py-3 px-4 border-b-2 font-medium text-sm transition-colors ${
+                            activeTab === 'assistant'
+                              ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                              : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400'
+                          }`}
+                          onClick={() => setActiveTab('assistant')}
+                        >
+                          <Bot size={18} className="inline-block mr-2" />
+                          Assistant
+                        </button>
                       </div>
                     </div>
 
@@ -184,8 +196,10 @@ function App() {
                             </div>
                           )}
                         </>
-                      ) : (
+                      ) : activeTab === 'analytics' ? (
                         <AnalyticsView results={results} />
+                      ) : (
+                        <AiAssistant summary={summary} />
                       )}
                     </div>
                   </div>
