@@ -121,6 +121,19 @@ function getUPSCombinations(total: number, maxItems = 4): number[][] {
   return results;
 }
 
+// Convert a zero-based index to an alphabetical plate label
+function getPlateLabel(index: number): string {
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let label = '';
+  index += 1; // switch to 1-based numbering
+  while (index > 0) {
+    index -= 1;
+    label = letters[index % 26] + label;
+    index = Math.floor(index / 26);
+  }
+  return label;
+}
+
 export const optimizeUpsWithPlates = (
   items: Array<{ COLOR: string; SIZE: string; QTY: number }>,
   upsPerPlate: number,
@@ -158,7 +171,7 @@ export const optimizeUpsWithPlates = (
 
     if (!bestCombo) break;
 
-    const plateLabel = String.fromCharCode(65 + plateIndex); // A, B, C...
+    const plateLabel = getPlateLabel(plateIndex); // A, B, C... AA after Z
 
     for (let i = 0; i < plateItems.length; i++) {
       const item = plateItems[i];
@@ -192,7 +205,7 @@ export const optimizeUpsWithPlates = (
     const sheets = Math.ceil(item.QTY / ups);
     const produced = sheets * ups;
     const excess = produced - item.QTY;
-    const plateLabel = String.fromCharCode(65 + plateIndex);
+    const plateLabel = getPlateLabel(plateIndex);
 
     results.push({
       COLOR: item.COLOR,
