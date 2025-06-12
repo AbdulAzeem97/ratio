@@ -1,0 +1,5 @@
+{
+  "paper": {"stock": 500, "cost": 0.05, "threshold": 100},
+  "ink": {"stock": 200, "cost": 0.02, "threshold": 50}
+}
+
