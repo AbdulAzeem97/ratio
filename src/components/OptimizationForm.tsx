@@ -41,7 +41,7 @@ const OptimizationForm: React.FC<OptimizationFormProps> = ({
   };
 
   const incrementPlates = () => {
-    setPlateCount(prev => Math.min(prev + 1, 26));
+    setPlateCount(prev => Math.min(prev + 1, 100));
   };
 
   const decrementPlates = () => {
@@ -108,16 +108,16 @@ const OptimizationForm: React.FC<OptimizationFormProps> = ({
               <input
                 type="number"
                 value={plateCount}
-                onChange={e => setPlateCount(Math.max(1, Math.min(26, parseInt(e.target.value) || 1)))}
+                onChange={e => setPlateCount(Math.max(1, Math.min(100, parseInt(e.target.value) || 1)))}
                 className="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:text-white text-center"
                 disabled={isDisabled || isCalculating}
                 min="1"
-                max="26"
+                max="100"
               />
               <button
                 type="button"
                 onClick={incrementPlates}
-                disabled={isDisabled || isCalculating || plateCount >= 26}
+                disabled={isDisabled || isCalculating || plateCount >= 100}
                 className="p-2 rounded-md border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50"
               >
                 <Plus size={16} />
