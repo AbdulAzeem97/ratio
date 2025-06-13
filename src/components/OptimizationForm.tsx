@@ -3,7 +3,12 @@ import { toast } from 'react-toastify';
 import { Calculator, Minus, Plus, Printer } from 'lucide-react';
 
 interface OptimizationFormProps {
-  onOptimize: (upsPerPlate: number, plateCount: number) => void;
+  onOptimize: (
+    upsPerPlate: number,
+    plateCount: number,
+    paperCost: number,
+    inkCost: number
+  ) => void;
   isCalculating: boolean;
   isDisabled: boolean;
 }
@@ -15,6 +20,8 @@ const OptimizationForm: React.FC<OptimizationFormProps> = ({
 }) => {
   const [upsPerPlate, setUpsPerPlate] = useState<number>(0);
   const [plateCount, setPlateCount] = useState<number>(0);
+  const [paperCost, setPaperCost] = useState<number>(0);
+  const [inkCost, setInkCost] = useState<number>(0);
   
   const handleOptimize = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +36,7 @@ const OptimizationForm: React.FC<OptimizationFormProps> = ({
       return;
     }
     
-    onOptimize(upsPerPlate, plateCount);
+    onOptimize(upsPerPlate, plateCount, paperCost, inkCost);
   };
 
   const incrementUps = () => {
@@ -126,6 +133,36 @@ const OptimizationForm: React.FC<OptimizationFormProps> = ({
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
               Number of printing plates to distribute work across
             </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Paper Cost per Sheet ($)
+            </label>
+            <input
+              type="number"
+              value={paperCost}
+              onChange={e => setPaperCost(Math.max(0, parseFloat(e.target.value) || 0))}
+              className="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:text-white"
+              disabled={isDisabled || isCalculating}
+              min="0"
+              step="0.01"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Ink Cost per Sheet ($)
+            </label>
+            <input
+              type="number"
+              value={inkCost}
+              onChange={e => setInkCost(Math.max(0, parseFloat(e.target.value) || 0))}
+              className="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:text-white"
+              disabled={isDisabled || isCalculating}
+              min="0"
+              step="0.01"
+            />
           </div>
         </div>
       </div>

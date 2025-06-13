@@ -23,4 +23,5 @@ export interface OptimizationSummary {
   totalPlates: number;
   totalItems: number;
   upsCapacity: number;
+  totalCost: number;
 }
